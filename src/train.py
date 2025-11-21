@@ -28,7 +28,32 @@ def main(train_csv: str, test_csv: str, model_path: str, max_iter: int):
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
 
-    joblib.dump(dummy, model_path)
+    modelos = {
+        "dummy": DummyClassifier(strategy="most_frequent"),
+        "svm": SVC(kernel="rbf", C=3, gamma="scale", max_iter=max_iter),
+        "random_forest": RandomForestClassifier(
+            n_estimators=150,
+            random_state=42
+        )
+    }
+
+    resultados = {}
+
+    for nombre, modelo in modelos.items():
+        print(f"\n>>> Entrenando modelo: {nombre}")
+        modelo.fit(X_train, y_train)
+
+        y_pred = modelo.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
+        resultados[nombre] = {
+            "accuracy": acc,
+        }
+
+        print(f"[{nombre.upper()}] Accuracy = {acc:.4f}")
+
+    mejor_modelo = max(resultados, key=lambda m: resultados[m]["accuracy"])
+
+    joblib.dump(mejor_modelo, model_path)
     print(f"[OK] Modelo guardado en: {model_path}")
     print(f"[MÉTRICA] Accuracy test: {acc:.4f}")
 
