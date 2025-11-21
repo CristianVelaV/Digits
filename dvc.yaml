@@ -1,0 +1,5 @@
+stages:
+  fetch:
+    cmd: python src/fetch_digits.py--out data/raw/digits.csv
+    outs:
+    - data/raw/digits.csv
