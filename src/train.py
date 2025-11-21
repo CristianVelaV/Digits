@@ -21,19 +21,12 @@ def main(train_csv: str, test_csv: str, model_path: str, max_iter: int):
     X_test = test.drop(columns=[TARGET_COL])
     y_test = test[TARGET_COL]
 
-    dummy = DummyClassifier()
-    dummy.fit(X_train, y_train)
-
-    y_pred = dummy.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
-
     modelos = {
         "dummy": DummyClassifier(strategy="most_frequent"),
         "svm": SVC(kernel="rbf", C=3, gamma="scale", max_iter=max_iter),
         "random_forest": RandomForestClassifier(
             n_estimators=150,
-            random_state=42
+            random_state=41
         )
     }
 
@@ -45,6 +38,7 @@ def main(train_csv: str, test_csv: str, model_path: str, max_iter: int):
 
         y_pred = modelo.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
+        cm = confusion_matrix(y_test, y_pred)
         resultados[nombre] = {
             "accuracy": acc,
         }
