@@ -1,5 +1,28 @@
 stages:
   fetch:
-    cmd: python src/fetch_digits.py--out data/raw/digits.csv
+    cmd: python src/fecth.py
     outs:
     - data/raw/digits.csv
+  prepare:
+    cmd: python src/preparedata.py
+    deps:
+    - data/raw/digits.csv
+    outs:
+    - data/processed/digits_clean.csv
+  split:
+    cmd: python src/split.py
+    deps:
+    - data/processed/digits_clean.csv
+    outs:
+    - data/processed/test.csv
+    - data/processed/train.csv
+  train:
+    cmd: python src/train.py
+    deps:
+    - data/processed/test.csv
+    - data/processed/train.csv
+    outs:
+    - models/model.pkl
+    metrics:
+    - models/metrics.json:
+        cache: false

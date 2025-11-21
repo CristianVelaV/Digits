@@ -1,0 +1,57 @@
+schema: '2.0'
+stages:
+  fetch:
+    cmd: python src/fecth.py
+    outs:
+    - path: data/raw/digits.csv
+      hash: md5
+      md5: 506baf5cff0902edb9184db83963156c
+      size: 497173
+  prepare:
+    cmd: python src/preparedata.py
+    deps:
+    - path: data/raw/digits.csv
+      hash: md5
+      md5: 506baf5cff0902edb9184db83963156c
+      size: 497173
+    outs:
+    - path: data/processed/digits_clean.csv
+      hash: md5
+      md5: 506baf5cff0902edb9184db83963156c
+      size: 497173
+  split:
+    cmd: python src/split.py
+    deps:
+    - path: data/processed/digits_clean.csv
+      hash: md5
+      md5: 506baf5cff0902edb9184db83963156c
+      size: 497173
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 807bff3571b9c48b896f8d3c3a68b7b9
+      size: 100025
+    - path: data/processed/train.csv
+      hash: md5
+      md5: cb94e7e2f4de9f63758f67d4046c7546
+      size: 397796
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 807bff3571b9c48b896f8d3c3a68b7b9
+      size: 100025
+    - path: data/processed/train.csv
+      hash: md5
+      md5: cb94e7e2f4de9f63758f67d4046c7546
+      size: 397796
+    outs:
+    - path: models/metrics.json
+      hash: md5
+      md5: a50c5f518dfc7a896d20a20038e105b6
+      size: 39
+    - path: models/model.pkl
+      hash: md5
+      md5: f6291c68f15d664027e930a159dcc00c
+      size: 1719
